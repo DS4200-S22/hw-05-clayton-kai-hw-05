@@ -131,7 +131,7 @@ d3.csv("data/iris.csv").then((data) => {
       .brush() // Add the brush feature using the d3.brush function
       .extent([
         [0, 0],
-        [width, height]
+        [width, height],
       ]); // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
 
     //TODO: Add brush1 to svg1
@@ -210,7 +210,7 @@ d3.csv("data/iris.csv").then((data) => {
         [width, height]
       ]);
 
-    svg1.call(brush2.on("start", clear).on("brush", updateChart2));
+    svg2.call(brush2.on("start", clear).on("brush", updateChart2));
   }
 
   //TODO: Barchart with counts of different species
@@ -294,10 +294,10 @@ d3.csv("data/iris.csv").then((data) => {
     //TODO: Find coordinates of brushed region
     let coordinates = d3.brushSelection(this);
     //TODO: Give bold outline to all points within the brush region in Scatterplot1
-    myCircles1.attr("selected", (d) => {
+    myCircles1.classed("selected", (d) => {
       return isBrushed(coordinates, x1(d.Sepal_Length), y1(d.Petal_Length))})
     //TODO: Give bold outline to all points in Scatterplot2 corresponding to points within the brush region in Scatterplot1
-    myCircles2.attr("selected", (d) => {
+    myCircles2.classed("selected", (d) => {
       return isBrushed(coordinates, x1(d.Sepal_Length), y1(d.Petal_Length))})
   }
 
@@ -308,17 +308,17 @@ d3.csv("data/iris.csv").then((data) => {
     //TODO: Start an empty set that you can store names of selected species in
     let species = new Set();
     //TODO: Give bold outline to all points within the brush region in Scatterplot2 & collected names of brushed species
-    myCircles2.attr("selected", (d) => {
+    myCircles2.classed("selected", (d) => {
       selected = isBrushed(coordinates, x2(d.Sepal_Width), y2(d.Petal_Width));
       if (selected) {
         species.add(d.Species);
       }
       return selected;})
     //TODO: Give bold outline to all points in Scatterplot1 corresponding to points within the brush region in Scatterplot2
-    myCircles1.attr("selected", (d) => {
+    myCircles1.classed("selected", (d) => {
       return isBrushed(coordinates, x2(d,Sepal_Width), y2(d.Petal_Width));})
     //TODO: Give bold outline to all bars in bar chart with corresponding to species selected by Scatterplot2 brush
-    barChart.attr("selected", (d) => {
+    barChart.classed("selected", (d) => {
       return species.has(d.Species);})  
   }
 
