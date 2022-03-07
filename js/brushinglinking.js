@@ -127,7 +127,7 @@ d3.csv("data/iris.csv").then((data) => {
       .style("opacity", 0.5);
 
     //TODO: Define a brush (call it brush1)
-    brush1 = d3
+    let brush1 = d3
       .brush() // Add the brush feature using the d3.brush function
       .extent([
         [0, 0],
@@ -135,17 +135,148 @@ d3.csv("data/iris.csv").then((data) => {
       ]); // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
 
     //TODO: Add brush1 to svg1
-    svg1.call(brush1.on("start", clear).on("brush", updateChart1));
+    svg1.call(brush1.on("brush", updateChart1).on("start", clear));
   }
 
   //TODO: Scatterplot 2 (show Sepal width on x-axis and Petal width on y-axis)
   {
-    // Scatterplot2 code here
+    let xKey2 = "Sepal_Length";
+    let yKey2 = "Petal_Length";
+
+    let maxX2 = d3.max(data, (d) => {
+      return d[xKey2];
+    });
+
+    let x2 = d3
+      .scaleLinear()
+      .domain([0, maxX1])
+      .range([margin.left, width - margin.right]);
+
+    svg2
+      .append("g")
+      .attr("transform", `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x2))
+      .attr("font-size", "20px")
+      .call((g) =>
+        g
+          .append("text")
+          .attr("x", width - margin.right)
+          .attr("y", margin.bottom - 4)
+          .attr("fill", "black")
+          .attr("text-anchor", "end")
+          .text(xKey2)
+      );
+
+    let maxY2 = d3.max(data, (d) => {
+      return d[yKey2];
+    });
+
+    let y2 = d3
+      .scaleLinear()
+      .domain([0, maxY1])
+      .range([height - margin.bottom, margin.top]);
+
+    svg2
+      .append("g")
+      .attr("transform", `translate(${margin.left}, 0)`)
+      .call(d3.axisLeft(y2))
+      .attr("font-size", "20px")
+      .call((g) =>
+        g
+          .append("text")
+          .attr("x", 0)
+          .attr("y", margin.top)
+          .attr("fill", "black")
+          .attr("text-anchor", "end")
+          .text(yKey2)
+      );
+
+    const myCircles2 = svg2
+      .selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("id", (d) => d.id)
+      .attr("cx", (d) => x1(d[xKey2]))
+      .attr("cy", (d) => y1(d[yKey2]))
+      .attr("r", 8)
+      .style("fill", (d) => color(d.Species))
+      .style("opacity", 0.5);
+
+    let brush2 = d3
+      .brush()
+      .extent([
+        [0, 0],
+        [width, height],
+      ]);
+
+    svg1.call(brush2.on("brush", updateChart2).on("start", clear));
   }
 
   //TODO: Barchart with counts of different species
   {
-    // Bar chart code here
+    const hardcode = [{Species: 'setosa', Count: 50}, {Species: 'versicolor', Count: 50}, {Species: 'virginica', Count: 50}];
+
+    let xKey3 = 'Species';
+    let yKey3 = 'Count';
+
+    let maxY3 = d3.max(hardcode, (d) => {
+      return d[yKey3];
+    });
+
+    let x3 = d3
+      .scaleBand()
+      .domain(d3.range(hardcode.length))
+      .range([margin.left, width - margin.right])
+      .padding(0.5);
+
+    let y3 = d3
+      .scaleLinear()
+      .domain([0, max31])
+      .range([height - margin.bottom, margin.top]);
+
+    svg3
+      .append("g")
+      .attr("transform", `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x3).tickFormat(a => hardcode[a].Species))
+      .attr("font-size", "20px")
+      .call((g) =>
+        g
+          .append("text")
+          .attr("x", width - margin.right)
+          .attr("y", margin.bottom - 4)
+          .attr("fill", "black")
+          .attr("text-anchor", "end")
+          .text(xKey3)
+    );
+
+    svg3
+      .append("g")
+      .attr("transform", `translate(${margin.left}, 0)`)
+      .call(d3.axisLeft(y3))
+      .attr("font-size", "20px")
+      .call((g) =>
+        g
+          .append("text")
+          .attr("x", 0)
+          .attr("y", margin.top)
+          .attr("fill", "black")
+          .attr("text-anchor", "end")
+          .text(yKey3)
+      );
+
+    const barChart = svg3
+      .selectAll("bar")
+      .data(hardcode)
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", (d, a) => x3(a))
+      .attr("y", (d) => y3(d.Count))
+      .attr("height", (d) => (height - margin.bottom) - y3(d.Count))
+      .attr("width", x3.bandwidth())
+      .style("fill", (d) => color(d.Species))
+      .style("opacity", 0.5);
   }
 
   //Brushing Code---------------------------------------------------------------------------------------------
