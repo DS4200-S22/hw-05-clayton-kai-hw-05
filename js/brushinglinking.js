@@ -1,7 +1,7 @@
 // Set margins and dimensions
 const margin = { top: 50, right: 50, bottom: 50, left: 200 };
-const width = 900; //- margin.left - margin.right;
-const height = 650; //- margin.top - margin.bottom;
+const width = 900 - margin.left - margin.right;
+const height = 650 - margin.top - margin.bottom;
 
 // Append svg object to the body of the page to house Scatterplot1
 const svg1 = d3
@@ -56,8 +56,8 @@ d3.csv("data/iris.csv").then((data) => {
 
   // Scatterplot1
   {
-    let xKey1 = "Sepal_Length";
-    let yKey1 = "Petal_Length";
+    yKey1 = "Petal_Length";
+    xKey1 = "Sepal_Length";
 
     // Find max x
     let maxX1 = d3.max(data, (d) => {
@@ -65,7 +65,7 @@ d3.csv("data/iris.csv").then((data) => {
     });
 
     // Create X scale
-    let x1 = d3
+    x1 = d3
       .scaleLinear()
       .domain([0, maxX1])
       .range([margin.left, width - margin.right]);
@@ -92,7 +92,7 @@ d3.csv("data/iris.csv").then((data) => {
     });
 
     // Create Y scale
-    let y1 = d3
+    y1 = d3
       .scaleLinear()
       .domain([0, maxY1])
       .range([height - margin.bottom, margin.top]);
@@ -114,7 +114,7 @@ d3.csv("data/iris.csv").then((data) => {
       );
 
     // Add points
-    const myCircles1 = svg1
+    myCircles1 = svg1
       .selectAll("circle")
       .data(data)
       .enter()
@@ -127,7 +127,7 @@ d3.csv("data/iris.csv").then((data) => {
       .style("opacity", 0.5);
 
     //TODO: Define a brush (call it brush1)
-    let brush1 = d3
+    brush1 = d3
       .brush() // Add the brush feature using the d3.brush function
       .extent([
         [0, 0],
@@ -140,14 +140,14 @@ d3.csv("data/iris.csv").then((data) => {
 
   //TODO: Scatterplot 2 (show Sepal width on x-axis and Petal width on y-axis)
   {
-    let xKey2 = "Sepal_Length";
-    let yKey2 = "Petal_Length";
+    yKey2 = "Petal_Length";
+    xKey2 = "Sepal_Length";
 
     let maxX2 = d3.max(data, (d) => {
       return d[xKey2];
     });
 
-    let x2 = d3
+    x2 = d3
       .scaleLinear()
       .domain([0, maxX2])
       .range([margin.left, width - margin.right]);
@@ -171,7 +171,7 @@ d3.csv("data/iris.csv").then((data) => {
       return d[yKey2];
     });
 
-    let y2 = d3
+    y2 = d3
       .scaleLinear()
       .domain([0, maxY2])
       .range([height - margin.bottom, margin.top]);
@@ -191,7 +191,7 @@ d3.csv("data/iris.csv").then((data) => {
           .text(yKey2)
       );
 
-    const myCircles2 = svg2
+    myCircles2 = svg2
       .selectAll("circle")
       .data(data)
       .enter()
@@ -203,7 +203,7 @@ d3.csv("data/iris.csv").then((data) => {
       .style("fill", (d) => color(d.Species))
       .style("opacity", 0.5);
 
-    let brush2 = d3
+    brush2 = d3
       .brush()
       .extent([
         [0, 0],
@@ -217,20 +217,20 @@ d3.csv("data/iris.csv").then((data) => {
   {
     const hardcode = [{Species: 'setosa', Count: 50}, {Species: 'versicolor', Count: 50}, {Species: 'virginica', Count: 50}];
 
-    let xKey3 = 'Species';
-    let yKey3 = 'Count';
+    xKey3 = 'Species';
+    yKey3 = 'Count';
 
     let maxY3 = d3.max(hardcode, (d) => {
       return d[yKey3];
     });
 
-    let x3 = d3
+    x3 = d3
       .scaleBand()
       .domain(d3.range(hardcode.length))
       .range([margin.left, width - margin.right])
       .padding(0.1);
 
-    let y3 = d3
+    y3 = d3
       .scaleLinear()
       .domain([0, maxY3])
       .range([height - margin.bottom, margin.top]);
@@ -265,7 +265,7 @@ d3.csv("data/iris.csv").then((data) => {
           .text(yKey3)
       );
 
-    const barChart = svg3
+    barChart = svg3
       .selectAll("bar")
       .data(hardcode)
       .enter()
