@@ -56,9 +56,9 @@ d3.csv("data/iris.csv").then((data) => {
 
   // Scatterplot1
   {
-    yKey1 = "Petal_Length";
     xKey1 = "Sepal_Length";
-
+    yKey1 = "Petal_Length";
+    
     // Find max x
     let maxX1 = d3.max(data, (d) => {
       return d[xKey1];
@@ -83,6 +83,7 @@ d3.csv("data/iris.csv").then((data) => {
           .attr("y", margin.bottom - 4)
           .attr("fill", "black")
           .attr("text-anchor", "end")
+          .attr("font-weight", "bold")
           .text(xKey1)
       );
 
@@ -107,9 +108,10 @@ d3.csv("data/iris.csv").then((data) => {
         g
           .append("text")
           .attr("x", 0)
-          .attr("y", margin.top)
+          .attr("y", margin.top - 10)
           .attr("fill", "black")
           .attr("text-anchor", "end")
+          .attr("font-weight", "bold")
           .text(yKey1)
       );
 
@@ -140,8 +142,8 @@ d3.csv("data/iris.csv").then((data) => {
 
   //TODO: Scatterplot 2 (show Sepal width on x-axis and Petal width on y-axis)
   {
-    yKey2 = "Petal_Length";
-    xKey2 = "Sepal_Length";
+    yKey2 = "Petal_Width";
+    xKey2 = "Sepal_Width";
 
     let maxX2 = d3.max(data, (d) => {
       return d[xKey2];
@@ -164,6 +166,7 @@ d3.csv("data/iris.csv").then((data) => {
           .attr("y", margin.bottom - 4)
           .attr("fill", "black")
           .attr("text-anchor", "end")
+          .attr("font-weight", "bold")
           .text(xKey2)
       );
 
@@ -185,9 +188,10 @@ d3.csv("data/iris.csv").then((data) => {
         g
           .append("text")
           .attr("x", 0)
-          .attr("y", margin.top)
+          .attr("y", margin.top - 10)
           .attr("fill", "black")
           .attr("text-anchor", "end")
+          .attr("font-weight", "bold")
           .text(yKey2)
       );
 
@@ -247,6 +251,7 @@ d3.csv("data/iris.csv").then((data) => {
           .attr("y", margin.bottom - 4)
           .attr("fill", "black")
           .attr("text-anchor", "end")
+          .attr("font-weight", "bold")
           .text(xKey3)
     );
 
@@ -262,6 +267,7 @@ d3.csv("data/iris.csv").then((data) => {
           .attr("y", margin.top - 20)
           .attr("fill", "black")
           .attr("text-anchor", "end")
+          .attr("font-weight", "bold")
           .text(yKey3)
       );
 
@@ -292,25 +298,38 @@ d3.csv("data/iris.csv").then((data) => {
   // Call when Scatterplot1 is brushed
   function updateChart1(brushEvent) {
     //TODO: Find coordinates of brushed region
-    
+    brushCoords = brushEvent.selection;
     //TODO: Give bold outline to all points within the brush region in Scatterplot1
-    
+    myCircles1.classed("selected", (d) => {
+      return isBrushed(brushCoords, x1(d[xKey1]), y1(d[yKey1]));
+    })
     //TODO: Give bold outline to all points in Scatterplot2 corresponding to points within the brush region in Scatterplot1
-    
+    myCircles2.classed("selected", (d) => {
+      return isBrushed(brushCoords, x1(d[xKey1]), y1(d[yKey1]));
+    })
   }
 
   // Call when Scatterplot2 is brushed
   function updateChart2(brushEvent) {
     //TODO: Find coordinates of brushed region
-    
+    brushCoords = brushEvent.selection;
     //TODO: Start an empty set that you can store names of selected species in
-    
+    let selectedSpecies = new Set();
     //TODO: Give bold outline to all points within the brush region in Scatterplot2 & collected names of brushed species
-    
+    myCircles2.classed("selected", (d) => {
+      if (isBrushed(brushCoords, x2(d[xKey2]), y2(d[yKey2]))) {
+        selectedSpecies.add(d.Species);
+      }
+      return isBrushed(brushCoords, x2(d[xKey2]), y2(d[yKey2]));
+    })
     //TODO: Give bold outline to all points in Scatterplot1 corresponding to points within the brush region in Scatterplot2
-    
+    myCircles1.classed("selected", (d) => {
+      return isBrushed(brushCoords, x2(d[xKey2]), y2(d[yKey2]));
+    })
     //TODO: Give bold outline to all bars in bar chart with corresponding to species selected by Scatterplot2 brush
-    
+    barChart.classed("selected", (d) => {
+      return selectedSpecies.has(d.Species);
+    })
   }
 
   //Finds dots within the brushed region
